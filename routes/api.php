@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('api')->namespace('Api')->group(function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+
+    Route::middleware(['jwt-auth'])->group(function () {
+        Route::get('teams', 'TeamController@getTeams');
+        Route::post('team', 'TeamController@createTeam');
+        Route::get('team/{id}', 'TeamController@getTeam');
+        Route::post('team/{id}', 'TeamController@updateTeam');
+        Route::post('delete-team', 'TeamController@deleteTeam');
+    });
 });
