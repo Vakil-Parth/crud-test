@@ -9,10 +9,10 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class GetTeamListApiTest extends TestCase
+class UpdateUserApiTest extends TestCase
 {
-    use WithFaker;
-    use DatabaseTransactions;
+   use WithFaker;
+   use DatabaseTransactions;
 
     protected function authenticateUser()
     {
@@ -25,15 +25,23 @@ class GetTeamListApiTest extends TestCase
     }
 
     /** @test */
-    function it_list_teams()
+    function it_update_team()
     {
-        factory(Team::class, 2)->create();
+        $role = Role::pluck('id')->toArray();
+        $team = Team::pluck('id')->toArray();
 
-        $response = $this->get('api/teams?token='.$this->authenticateUser());
+        $user = factory(User::class)->create();
+
+        $response = $this->post('api/user/'.$user->id.'?token='.$this->authenticateUser(), [
+            'name' => $this->faker->word,
+            'team_id' => $team[array_rand($team)],
+            'role_id' => $role[array_rand($role)]
+        ]);
 
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true
             ]);
     }
+
 }

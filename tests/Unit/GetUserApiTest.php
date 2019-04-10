@@ -8,10 +8,11 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class CreateTeamApiTest extends TestCase
+class GetUserApiTest extends TestCase
 {
     use WithFaker;
     use DatabaseTransactions;
+
 
     protected function authenticateUser()
     {
@@ -24,39 +25,25 @@ class CreateTeamApiTest extends TestCase
     }
 
     /** @test */
-    function it_create_team()
+    function it_get_user_from_id()
     {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => $this->faker->word
-        ]);
+        $user = factory(User::class)->create();
+        $response = $this->get('api/user/'.$user->id.'?token='.$this->authenticateUser());
 
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true
             ]);
+
+        $this->assertEquals($user->id, $response->json('user.id'));
     }
 
     /** @test */
-    function it_require_title_field()
+    function it_give_user_not_found_if_id_is_not_given()
     {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => ''
-        ]);
+        $response = $this->get('api/user/abc?token='.$this->authenticateUser());
 
-        $response->assertStatus(422)
-            ->assertJson([
-                'success' => false
-            ]);
-    }
-
-    /** @test */
-    function it_require_title_field_must_be_string()
-    {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => 2210
-        ]);
-
-        $response->assertStatus(422)
+        $response->assertStatus(200)
             ->assertJson([
                 'success' => false
             ]);

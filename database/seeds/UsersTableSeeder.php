@@ -14,12 +14,12 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = factory(User::class)->create();
+        $user = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('password')
+        ]);
 
-        $role = Role::where('name', Role::ROLE_TEAM_OWNER)->first();
-
-        $team = Team::first();
-
-        $user->roles()->sync([$role->id => ['team_id' => $team->id]], false);
+        $user->assignRole(Role::ROLE_ADMIN);
     }
 }

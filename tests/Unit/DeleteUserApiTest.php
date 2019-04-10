@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class CreateTeamApiTest extends TestCase
+class DeleteUserApiTest extends TestCase
 {
     use WithFaker;
     use DatabaseTransactions;
@@ -24,39 +24,30 @@ class CreateTeamApiTest extends TestCase
     }
 
     /** @test */
-    function it_create_team()
+    function it_delete_user()
     {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => $this->faker->word
+        $user = factory(User::class)->create();
+
+        $response = $this->post('api/delete-user?token='.$this->authenticateUser(), [
+            'user_id' => $user->id
         ]);
 
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true
             ]);
+
+        $this->assertDatabaseMissing('users', $user->toArray());
     }
 
     /** @test */
-    function it_require_title_field()
+    function it_require_user_id_for_delete_user()
     {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => ''
+        $response = $this->post('api/delete-user?token='.$this->authenticateUser(), [
+            'user_id' => ''
         ]);
 
-        $response->assertStatus(422)
-            ->assertJson([
-                'success' => false
-            ]);
-    }
-
-    /** @test */
-    function it_require_title_field_must_be_string()
-    {
-        $response = $this->post('api/team?token='.$this->authenticateUser(), [
-            'title' => 2210
-        ]);
-
-        $response->assertStatus(422)
+        $response->assertStatus(200)
             ->assertJson([
                 'success' => false
             ]);

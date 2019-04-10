@@ -3,13 +3,12 @@
 namespace Tests\Unit;
 
 use App\Domain\Role\Role;
-use App\Domain\Team\Team;
 use App\Domain\User\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class GetTeamListApiTest extends TestCase
+class GetUserListApiTest extends TestCase
 {
     use WithFaker;
     use DatabaseTransactions;
@@ -25,11 +24,11 @@ class GetTeamListApiTest extends TestCase
     }
 
     /** @test */
-    function it_list_teams()
+    function it_list_users()
     {
-        factory(Team::class, 2)->create();
+        factory(User::class, 2)->create();
 
-        $response = $this->get('api/teams?token='.$this->authenticateUser());
+        $response = $this->get('api/users?token='.$this->authenticateUser());
 
         $response->assertStatus(200)
             ->assertJson([

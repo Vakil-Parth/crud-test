@@ -2,6 +2,7 @@
 
 namespace App\Domain\User;
 
+use App\Domain\Team\Team;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
@@ -57,5 +58,13 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'model_has_roles', 'model_id', 'team_id');
     }
 }

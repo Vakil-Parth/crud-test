@@ -58,11 +58,11 @@ class CreatePermissionTables extends Migration
                 ->on($tableNames['roles'])
                 ->onDelete('cascade');
 
-            $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('team_id')->nullable();
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
 
-            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type', 'team_id'],
+            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'],
                     'model_has_roles_role_model_type_primary');
         });
 

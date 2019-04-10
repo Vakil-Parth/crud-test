@@ -13,6 +13,7 @@ class RolesTableSeeder extends Seeder
     public function run()
     {
         $rolesArray = [
+            Role::ROLE_ADMIN,
             Role::ROLE_TEAM_OWNER,
             Role::ROLE_DESIGNER,
             Role::ROLE_DEVELOPER,

@@ -2,20 +2,22 @@
 
 namespace Tests\Unit;
 
+use App\Domain\Role\Role;
 use App\Domain\Team\Team;
 use App\Domain\User\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UpdateTeamApiTest extends TestCase
 {
     use WithFaker;
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function authenticateUser()
     {
         $user = factory(User::class)->create();
+        $user->assignRole(Role::ROLE_ADMIN);
 
         $token = \JWTAuth::fromUser($user);
 
